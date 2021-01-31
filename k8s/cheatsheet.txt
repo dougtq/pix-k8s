@@ -1,0 +1,13 @@
+kubectl apply -f k8s/pod.yaml
+
+kubectl port-forward pod/hotserver 8080:80
+
+kubectl port-forward replicasets/hotserver 8080:80
+
+kubectl delete pod --all
+
+
+kubectl run -it --generator=run-pod/v1 fortio --rm --image=fortio/fortio -- load -qps 1000 -t 100s -c 70 "http://hotserver-service:8080/"
+
+
+watch -n1 kubectl get hpa
